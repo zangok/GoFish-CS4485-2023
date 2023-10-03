@@ -1,8 +1,10 @@
-package com.example.goldfish;
+package com.example.goldfish.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+
+import com.example.goldfish.R;
 
 public class MainActivity extends AppCompatActivity {
 
