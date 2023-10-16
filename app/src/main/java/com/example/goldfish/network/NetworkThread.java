@@ -1,59 +1,102 @@
 package com.example.goldfish.network;
 
-import android.content.Context;
-import android.net.wifi.p2p.WifiP2pDevice;
+import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class NetworkThread extends Thread {
-    //private Handler handler;
+    private Handler networkHandler;
     //private WifiDirect manager;
     //private MessageListener listener;
     //private static final int MSG_TYPE_SEND_DATA = 1;
     //private static final int MSG_TYPE_RECEIVE_DATA = 2;
-    //private List<WifiDirectListener> networkMessageListeners;
+    private List<WifiDirectListener> networkMessageListeners;
     private Socket socket;
+    private ServerSocket serverSocket;
+    private String ipAddress;
+    private boolean isHost;
     private BlockingQueue<String> messageQueue = new LinkedBlockingQueue<>();
-    public NetworkThread() {
-        //networkMessageListeners = new ArrayList<>();
-        //manager = wifiDirect;
-        //manager.discoverPeers();
+    public NetworkThread(String ipAddress, Handler networkHandler) {
+        try {
+            socket = new Socket(ipAddress,8080);
+            this.networkHandler  = networkHandler;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        isHost  = false;
+    }
+    public NetworkThread(Handler networkHandler) {
+        try {
+            serverSocket = new ServerSocket(8080);
+            this.networkHandler  = networkHandler;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        isHost  = true;
     }
 
     @Override
     public void run() {
         Log.d("network","network thread made");
-
-
+        try {
+            if(isHost) {
+                    socket = serverSocket.accept();
+                    handleMessage(socket.getOutputStream(), socket.getInputStream());
+            } else {
+                handleMessage(socket.getOutputStream(), socket.getInputStream());
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 
     //network operations
 
     public void sendMessage(String message) {
-        if (socket != null) {
-            try {
-                OutputStream outputStream = socket.getOutputStream();
-                byte[] messageBytes = message.getBytes();
-                outputStream.write(messageBytes);
-            } catch (IOException e) {
-                // Handle exceptions, such as socket or I/O errors
-            }
-        }
+        messageQueue.add(message);
     }
 
-    public void receiveMessage(String message) {
-        // Add the incoming message to the message queue
-        messageQueue.offer(message);
+    private void handleMessage(OutputStream outputStream, InputStream inputStream) {
+        while (true) {
+            if (!messageQueue.isEmpty()) {
+                String message = messageQueue.poll();
+                try {
+                    outputStream.write(message.getBytes());
+                    outputStream.flush();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            try {
+                if (inputStream.available() > 0) {
+                    byte[] buffer = new byte[1024];
+                    int bytesRead = inputStream.read(buffer);
+                    if (bytesRead > 0) {
+                        String receivedMessage = new String(buffer, 0, bytesRead);
+                        Message message = Message.obtain();
+                        message.what = 1;
+                        // You can attach data or information to the message
+                        Bundle bundle = new Bundle();
+                        bundle.putString("key", receivedMessage);
+                        message.setData(bundle);
+                        networkHandler.sendMessage(message);
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }
     }
 }

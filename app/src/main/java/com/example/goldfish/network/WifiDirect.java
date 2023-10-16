@@ -14,6 +14,7 @@ import android.net.wifi.p2p.WifiP2pDeviceList;
 import android.net.wifi.p2p.WifiP2pInfo;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 
@@ -32,9 +33,10 @@ public class WifiDirect  {
     private BroadcastReceiver receiver;
     private final IntentFilter intentFilter = new IntentFilter();
     private List<WifiP2pDevice> peers = new ArrayList<>();
+    private Handler networkHandler;
     private NetworkThread networkThread;
 
-    public WifiDirect(Context context) {
+    public WifiDirect(Context context, Handler nethandler) {
         this.context = context;
 
         // Indicates a change in the Wi-Fi Direct status.
@@ -52,8 +54,9 @@ public class WifiDirect  {
         manager = (WifiP2pManager) context.getSystemService(Context.WIFI_P2P_SERVICE);
         channel = manager.initialize(context, context.getMainLooper(), null);
         receiver = new WiFiDirectBroadcastReceiver(manager, channel, this);
-        networkThread = new NetworkThread();
-        networkThread.start();
+        //networkThread = new NetworkThread();
+        //networkThread.start();
+        networkHandler = nethandler;
         discoverPeers();
 
     }
@@ -62,7 +65,6 @@ public class WifiDirect  {
         networkThread.sendMessage(message);
     }
     private void handleReceivedMessage(String message) {
-
     }
     public void registerMessageListener(WifiDirectListener listener) {
         networkMessageListeners.add(listener);
@@ -112,11 +114,11 @@ public class WifiDirect  {
         @Override
         public void onConnectionInfoAvailable(WifiP2pInfo info) {
             if (info.groupFormed && info.isGroupOwner) {
-                // This device is the group owner (server)
-                // Set up the game server and player connections
+                networkThread = new NetworkThread(networkHandler);
+                networkThread.start();
             } else if (info.groupFormed) {
-                // This device is a client
-                // Set up the game client and connect to the server
+                networkThread = new NetworkThread(info.groupOwnerAddress.getHostAddress(),networkHandler);
+                networkThread.start();
             }
         }
     }
@@ -166,12 +168,12 @@ public class WifiDirect  {
         manager.connect(channel, config, new WifiP2pManager.ActionListener() {
             @Override
             public void onSuccess() {
-                // Connection initiated successfully
+                Log.d("network","Connection successful::");
             }
 
             @Override
             public void onFailure(int reasonCode) {
-                // Connection initiation failed
+                Log.d("network","Connection failed::" + reasonCode);
             }
         });
     }
