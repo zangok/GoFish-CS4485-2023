@@ -41,6 +41,44 @@ public class MainActivity extends ComponentActivity {
 
         ActivityCompat.requestPermissions(this, permissionsToRequest, 1);
 
+ // Linking to the string resources
+        String appName = getString(R.string.app_name); // Gets the app_name string
+        String startGameText = getString(R.string.start_game); // Gets the start_game string
+
+        // Find the LottieAnimationView
+        LottieAnimationView animationView = findViewById(R.id.animationView);
+        // Set animation resource
+        animationView.setAnimation(R.raw.animation);
+        // Start the animation
+        animationView.playAnimation();
+        // Optionally, loop the animation (for infinite loop)
+        animationView.setRepeatCount(LottieDrawable.INFINITE);
+
+        animationView.setScaleX(4.0f); // Adjust the scale as needed
+        animationView.setScaleY(4.0f); // Adjust the scale as needed
+
+        Button startGameButton = findViewById(R.id.startGameButton);
+        
+
+        // Get the TextView by its ID
+        TextView titleTextView = findViewById(R.id.titleTextView);
+
+        // Set the text with an emoji
+        titleTextView.setText("Go\uD83C\uDCCFFish");
+
+        Button rulesButton = findViewById(R.id.rulesButton);
+
+        rulesButton.setOnClickListener(v -> {
+            // Create an Intent to start the RulesActivity
+            Intent intent = new Intent(MainActivity.this, RulesActivity.class);
+
+            // Start the new activity
+            startActivity(intent);
+        });
+
+        Button settingsButton = findViewById(R.id.settingsButton);
+    }
+
     }
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -58,30 +96,4 @@ public class MainActivity extends ComponentActivity {
 }
 
 
-        // Linking to the string resources
-        String appName = getString(R.string.app_name); // Gets the app_name string
-        String startGameText = getString(R.string.start_game); // Gets the start_game string
-
-        // Find the LottieAnimationView
-        LottieAnimationView animationView = findViewById(R.id.animationView);
-        // Set animation resource
-        animationView.setAnimation(R.raw.animation);
-        // Start the animation
-        animationView.playAnimation();
-        // Optionally, loop the animation (for an infinite loop)
-        animationView.setRepeatCount(LottieDrawable.INFINITE);
-
-        animationView.setScaleX(4.0f); // Adjust the scale as needed
-        animationView.setScaleY(4.0f); // Adjust the scale as needed
-
-        Button startGameButton = findViewById(R.id.startGameButton);
-
-        // Get the TextView by its ID
-        TextView titleTextView = findViewById(R.id.titleTextView);
-
-        // Set the text with an emoji
-        titleTextView.setText("Go\uD83C\uDCCFFish");
-
-        Button
-
-
+ 
