@@ -23,17 +23,20 @@ public class WiFiDirectBroadcastReceiver extends BroadcastReceiver {
     private WifiP2pManager.ConnectionInfoListener connectionListener;
 
     public WiFiDirectBroadcastReceiver(WifiP2pManager manager, WifiP2pManager.Channel channel,
-                                       WifiDirect activity) {
+                                       WifiDirect activity, WifiP2pManager.PeerListListener peerListListener,
+                                       WifiP2pManager.ConnectionInfoListener connectionListener) {
         super();
         this.manager = manager;
         this.channel = channel;
         this.activity = activity;
+        this.peerListListener = peerListListener;
+        this.connectionListener = connectionListener;
     }
 
     @Override
     public void onReceive(Context context, Intent intent) {
         String action = intent.getAction();
-        Log.d("receive","action");
+        Log.d("receive", action);
         if (WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION.equals(action)) {
             // Check to see if Wi-Fi is enabled and notify appropriate activity
         } else if (WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION.equals(action)) {
@@ -47,6 +50,7 @@ public class WiFiDirectBroadcastReceiver extends BroadcastReceiver {
                     //                                          int[] grantResults)
                     // to handle the case where the user grants the permission. See the documentation
                     // for ActivityCompat#requestPermissions for more details.
+                    Log.d("network", "onReceive: lacking permissions for p2p peers changed");
                     return;
                 }
                 manager.requestPeers(channel, peerListListener);

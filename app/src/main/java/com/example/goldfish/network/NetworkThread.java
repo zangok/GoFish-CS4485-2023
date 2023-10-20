@@ -62,11 +62,11 @@ public class NetworkThread extends Thread {
 
 
     //network operations
-
+    //todo: change to use handler instead
     public void sendMessage(String message) {
         messageQueue.add(message);
     }
-
+    //todo:not use busy wait, create thread to read and a thread to write + blocking read / write
     private void handleMessage(OutputStream outputStream, InputStream inputStream) {
         while (true) {
             if (!messageQueue.isEmpty()) {
@@ -86,7 +86,6 @@ public class NetworkThread extends Thread {
                         String receivedMessage = new String(buffer, 0, bytesRead);
                         Message message = Message.obtain();
                         message.what = 1;
-                        // You can attach data or information to the message
                         Bundle bundle = new Bundle();
                         bundle.putString("key", receivedMessage);
                         message.setData(bundle);
