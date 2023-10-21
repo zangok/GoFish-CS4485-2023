@@ -1,16 +1,15 @@
-package com.example.myapplication;
+package com.example.gofish.activities;
 import com.airbnb.lottie.LottieAnimationView;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import androidx.activity.ComponentActivity;
+
 import com.airbnb.lottie.LottieDrawable;
-import android.widget.TextView;
-import com.google.android.material.snackbar.Snackbar;
+import com.example.myapplication.R;
+
 import androidx.appcompat.app.AppCompatActivity;
-import android.os.Bundle;
 
 public class RulesActivity extends AppCompatActivity {
 

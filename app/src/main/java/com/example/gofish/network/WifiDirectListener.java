@@ -1,6 +1,4 @@
-package com.example.goldfish.network;
-
-import android.net.wifi.p2p.WifiP2pDevice;
+package com.example.gofish.network;
 
 public interface WifiDirectListener {
     void onDeviceDiscovered();

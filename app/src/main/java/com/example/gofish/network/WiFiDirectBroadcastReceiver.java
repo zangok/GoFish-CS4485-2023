@@ -1,4 +1,4 @@
-package com.example.goldfish.network;
+package com.example.gofish.network;
 
 import android.Manifest;
 import android.content.BroadcastReceiver;

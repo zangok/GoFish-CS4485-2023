@@ -1,9 +1,6 @@
-package com.example.gofish;
+package com.example.gofish.activities;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 
 public class GoFishGame {
   private List<Player> players;

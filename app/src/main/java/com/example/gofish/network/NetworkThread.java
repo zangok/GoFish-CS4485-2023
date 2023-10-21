@@ -1,4 +1,4 @@
-package com.example.goldfish.network;
+package com.example.gofish.network;
 
 import android.os.Bundle;
 import android.os.Handler;

@@ -1,27 +1,23 @@
-package com.example.goldfish.network;
+package com.example.gofish.network;
 
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
-import android.net.wifi.WpsInfo;
 import android.net.wifi.p2p.WifiP2pConfig;
 import android.net.wifi.p2p.WifiP2pDevice;
 import android.net.wifi.p2p.WifiP2pDeviceList;
 import android.net.wifi.p2p.WifiP2pInfo;
 import android.net.wifi.p2p.WifiP2pManager;
-import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
 
 import androidx.core.app.ActivityCompat;
 
-import com.example.goldfish.R;
+import com.example.gofish.R;
 
 import java.util.ArrayList;
 import java.util.Collections;
