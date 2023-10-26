@@ -42,6 +42,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name="com.example.gofish.activities.RulesActivity">
+            <!-- Intent filters and other activity configuration if needed -->
+        </activity>
+
 
     </application>
 
