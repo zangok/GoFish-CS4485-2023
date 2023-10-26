@@ -1,7 +1,6 @@
-package com.example.goldfish;
+package com.example.gofish.activities;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 

@@ -1,4 +1,4 @@
-package com.example.goldfish;
+package com.example.gofish;
 
 import android.content.Context;
 

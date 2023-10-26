@@ -1,3 +1,5 @@
 <resources>
-    <string name="app_name">Gold Fish</string>
+    <string name="app_name">Go Fish Game</string>
+    <string name="start_game">Start Game</string>
+    <string name="title_image_description">Go Fish Title</string>
 </resources>

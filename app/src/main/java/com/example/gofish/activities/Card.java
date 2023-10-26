@@ -1,4 +1,4 @@
-package com.example.gofish;
+package com.example.gofish.activities;
 
 public class Card {
     private String rank;

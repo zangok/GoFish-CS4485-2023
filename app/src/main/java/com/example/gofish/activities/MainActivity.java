@@ -1,8 +1,7 @@
-package com.example.goldfish.activities;
+package com.example.gofish.activities;
 
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
@@ -10,11 +9,8 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
 
-import com.example.goldfish.R;
-import com.example.goldfish.network.WifiDirect;
-=======
+import com.example.gofish.network.WifiDirect;
 import android.content.Intent;
-import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -22,6 +18,7 @@ import androidx.activity.ComponentActivity;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieDrawable;
+import com.example.myapplication.R;
 
 
 public class MainActivity extends ComponentActivity {
@@ -79,7 +76,7 @@ public class MainActivity extends ComponentActivity {
         Button settingsButton = findViewById(R.id.settingsButton);
     }
 
-    }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
