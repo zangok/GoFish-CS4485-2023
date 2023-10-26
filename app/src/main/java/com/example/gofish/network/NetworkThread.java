@@ -20,7 +20,6 @@ public class NetworkThread extends Thread {
     //private MessageListener listener;
     //private static final int MSG_TYPE_SEND_DATA = 1;
     //private static final int MSG_TYPE_RECEIVE_DATA = 2;
-    private List<WifiDirectListener> networkMessageListeners;
     private Socket socket;
     private ServerSocket serverSocket;
     private String ipAddress;
@@ -65,6 +64,7 @@ public class NetworkThread extends Thread {
     //todo: change to use handler instead
     public void sendMessage(String message) {
         messageQueue.add(message);
+        Log.d("network","Message Queued");
     }
     //todo:not use busy wait, create thread to read and a thread to write + blocking read / write
     private void handleMessage(OutputStream outputStream, InputStream inputStream) {
@@ -74,6 +74,7 @@ public class NetworkThread extends Thread {
                 try {
                     outputStream.write(message.getBytes());
                     outputStream.flush();
+                    Log.d("network","Message Sent to Peer");
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

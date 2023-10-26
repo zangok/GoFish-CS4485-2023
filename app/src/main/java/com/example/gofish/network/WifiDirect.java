@@ -17,7 +17,6 @@ import android.util.Log;
 
 import androidx.core.app.ActivityCompat;
 
-import com.example.gofish.R;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -151,7 +150,7 @@ public class WifiDirect  {
             @Override
             public void onSuccess() {
                 Log.d("network","peers discovered");
-                receiver.onReceive(context, new Intent(WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION));
+                //receiver.onReceive(context, new Intent(WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION));
             }
 
 
@@ -169,6 +168,32 @@ public class WifiDirect  {
     public void connect(WifiP2pDevice device) {
         WifiP2pConfig config = new WifiP2pConfig();
         config.deviceAddress = device.deviceAddress;
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(context, Manifest.permission.NEARBY_WIFI_DEVICES) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        manager.connect(channel, config, new WifiP2pManager.ActionListener() {
+            @Override
+            public void onSuccess() {
+                Log.d("network","Connection successful");
+            }
+
+            @Override
+            public void onFailure(int reasonCode) {
+                Log.d("network","Connection failed::" + reasonCode);
+            }
+        });
+    }
+    //we call this to connect if peer exist, dont care about who
+    public void connect() {
+        WifiP2pConfig config = new WifiP2pConfig();
+        config.deviceAddress = peers.get(0).deviceAddress;
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(context, Manifest.permission.NEARBY_WIFI_DEVICES) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
             //    ActivityCompat#requestPermissions
