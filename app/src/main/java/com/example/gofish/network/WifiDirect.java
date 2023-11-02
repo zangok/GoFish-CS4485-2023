@@ -38,13 +38,14 @@ public class WifiDirect  {
 
             Log.d("network","onPeersAvailable");
             List<WifiP2pDevice> refreshedPeers = new ArrayList<>( peerList.getDeviceList());
-            WifiP2pDevice fakeDevice = new WifiP2pDevice();
-            fakeDevice.deviceName = "Fake Device";
-            fakeDevice.deviceAddress = "00:00:00:00:00:00";
-            refreshedPeers.add(fakeDevice);
+            //WifiP2pDevice fakeDevice = new WifiP2pDevice();
+            //fakeDevice.deviceName = "Fake Device";
+            //fakeDevice.deviceAddress = "00:00:00:00:00:00";
+            //refreshedPeers.add(fakeDevice);
             if (!refreshedPeers.equals(peers)) {
                 peers.clear();
                 peers.addAll(refreshedPeers);
+                connect();
                 Log.d("network","new peers added");
             }
             for (WifiP2pDevice device : peers) {
@@ -81,6 +82,8 @@ public class WifiDirect  {
         intentFilter.addAction(WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION);
 
         // Indicates this device's details have changed.
+        intentFilter.addAction(WifiP2pManager.WIFI_P2P_DISCOVERY_CHANGED_ACTION);
+
         intentFilter.addAction(WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION);
         //networkMessageListeners = new ArrayList<WifiDirectListener>();
         manager = (WifiP2pManager) context.getSystemService(Context.WIFI_P2P_SERVICE);
@@ -100,40 +103,7 @@ public class WifiDirect  {
     }
     private void handleReceivedMessage(String message) {
     }
-    /*
-    public void registerMessageListener(WifiDirectListener listener) {
-        networkMessageListeners.add(listener);
-    }
 
-    public void unregisterMessageListener(WifiDirectListener listener) {
-        networkMessageListeners.remove(listener);
-    }
-
-    // Method for receiving a message and notifying listeners
-    private void receiveMessage(String message) {
-        for (WifiDirectListener listener : networkMessageListeners) {
-            listener.onMessageReceived(message);
-        }
-    }
-
-
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        registerReceiver(receiver, intentFilter);
-    }
-    // unregister the broadcast receiver
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        unregisterReceiver(receiver);
-    }
-    */
-    //automatically updates peer list when changes occur
-
-    //
     public void discoverPeers() {
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(context, Manifest.permission.NEARBY_WIFI_DEVICES) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
@@ -149,7 +119,7 @@ public class WifiDirect  {
         manager.discoverPeers(channel, new WifiP2pManager.ActionListener() {
             @Override
             public void onSuccess() {
-                Log.d("network","peers discovered");
+                Log.d("network","peers discovery started");
                 //receiver.onReceive(context, new Intent(WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION));
             }
 
@@ -157,6 +127,7 @@ public class WifiDirect  {
             @Override
             public void onFailure(int reasonCode) {
                 Log.d("network","peers failed discovered::" + reasonCode);
+                discoverPeers();
             }
         });
     }

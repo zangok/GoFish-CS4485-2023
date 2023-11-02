@@ -36,23 +36,25 @@ public class WiFiDirectBroadcastReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         String action = intent.getAction();
-        Log.d("receive", action);
+        Log.d("onReceive", action);
+
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(context, Manifest.permission.NEARBY_WIFI_DEVICES) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            Log.d("network", "onReceive: lacking permissions for p2p peers changed");
+            //return;
+        }
         if (WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION.equals(action)) {
-            // Check to see if Wi-Fi is enabled and notify appropriate activity
+            manager.requestPeers(channel, peerListListener);
         } else if (WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION.equals(action)) {
             // Call WifiP2pManager.requestPeers() to get a list of current peers
             if (manager != null) {
-                if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(context, Manifest.permission.NEARBY_WIFI_DEVICES) != PackageManager.PERMISSION_GRANTED) {
-                    // TODO: Consider calling
-                    //    ActivityCompat#requestPermissions
-                    // here to request the missing permissions, and then overriding
-                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                    //                                          int[] grantResults)
-                    // to handle the case where the user grants the permission. See the documentation
-                    // for ActivityCompat#requestPermissions for more details.
-                    Log.d("network", "onReceive: lacking permissions for p2p peers changed");
-                    return;
-                }
+
                 manager.requestPeers(channel, peerListListener);
             }
         } else if (WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION.equals(action)) {
@@ -72,6 +74,18 @@ public class WiFiDirectBroadcastReceiver extends BroadcastReceiver {
             }
         } else if (WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION.equals(action)) {
             // Respond to this device's wifi state changing
+        }
+        if (WifiP2pManager.WIFI_P2P_DISCOVERY_CHANGED_ACTION.equals(action)) {
+            // Discovery state has changed, handle it here
+            int discoveryState = intent.getIntExtra(WifiP2pManager.EXTRA_DISCOVERY_STATE, -1);
+
+            if (discoveryState == WifiP2pManager.WIFI_P2P_DISCOVERY_STARTED) {
+                // Wi-Fi Direct discovery has started
+                Log.d("network", "Discovery started");
+            } else if (discoveryState == WifiP2pManager.WIFI_P2P_DISCOVERY_STOPPED) {
+                // Wi-Fi Direct discovery has stopped
+                Log.d("network", "Discovery stopped");
+            }
         }
     }
 
