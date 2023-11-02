@@ -49,46 +49,57 @@ public class Player {
     }
 
     public boolean hasCard(String rank) {
-      for(Card card : hand) {
-        if(card.getRank().equals(rank)) {
-          return true;
+        for(Card card : hand) {
+            if(card.getRank().equals(rank)) {
+                return true;
+            }
         }
-      }
-      return false;
-    } 
+        return false;
+    }
 
     public List<Card> transferCards(String rank) {
-      List<Card> cardsToTransfer = new ArrayList<>();
-      Iterator<Card> iterator = hand.iterator();
-      while(iterator.hasNext()) {
-        Card card = iterator.next();
-        if(card.getRank().equals(rank)) {
-          cardsToTransfer.add(card);
-          iterator.remove();
+        List<Card> cardsToTransfer = new ArrayList<>();
+        Iterator<Card> iterator = hand.iterator();
+        while(iterator.hasNext()) {
+            Card card = iterator.next();
+            if(card.getRank().equals(rank)) {
+                cardsToTransfer.add(card);
+                iterator.remove();
+            }
         }
-      }
-      return cardsToTransfer;
+        return cardsToTransfer;
     }
 
-  private int countRankCards(String rank) {
-    int count = 0;
-    for(Card card : hand) {
-      if(card.getRank().equals(rank)) {
-        count++;
-      }
+    public void addToHand(List<Card> cards) {
+        hand.addAll(cards);
     }
-    return count;
-  }
 
-  private void removeRankCards(String rank) {
-    Iterator<Card> iterator = hand.iterator();
-    while(iterator.hasNext()) {
-      Card card = iterator.next();
-      if(card.getRank().equals(rank)) {
-        iterator.remove();
-      }
+    protected int countRankCards(String rank) {
+        int count = 0;
+        for (Card card : hand) {
+            if (card.getRank().equals(rank)) {
+                count++;
+            }
+        }
+        return count;
     }
-  }
+
+    protected void removeRankCards(String rank) {
+        Iterator<Card> iterator = hand.iterator();
+        while (iterator.hasNext()) {
+            Card card = iterator.next();
+            if (card.getRank().equals(rank)) {
+                iterator.remove();
+            }
+        }
+    }
+
+
+    public void addToScore(int points) {
+        score += points;
+    }
+
+
   
 
 }
