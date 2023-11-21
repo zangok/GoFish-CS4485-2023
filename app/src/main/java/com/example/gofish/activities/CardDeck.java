@@ -6,17 +6,20 @@ import java.util.Random;
 
 public class CardDeck {
   private List<Card> deck;
-
+    
+  //Constructor for CardDeck
   public CardDeck() {
     initializeDeck();
   }
-
+    
+  //Initialize the deck with all the possible cards
   private void initializeDeck() {
     deck = new ArrayList<>();
 
     String[] suits = {"Hearts", "Diamonds", "Clubs", "Spades"};
     String[] ranks = {"2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King", "Ace"};
-
+    
+    //Create cards for each combination of suit and rank and add them to deck
     for(String suit : suits) {
       for(String rank : ranks) {
         deck.add(new Card(rank, suit));
@@ -24,7 +27,12 @@ public class CardDeck {
     }
   }
 
+  //Shuffle the deck
   public void shuffle() {
+    //Check if the deck is empty before shuffling
+    if(deck.isEmpty()) {
+        throw new IllegalStateException("Deck is empty.");
+    }
     int deckSize = deck.size();
     Random random = new Random();
 
@@ -36,7 +44,8 @@ public class CardDeck {
       deck.set(j, temp);
     }
   }
-
+  
+  //Draw a card from the top of the deck
   public Card drawCard() {
     if(!deck.isEmpty()) {
       return deck.remove(0);
@@ -46,6 +55,7 @@ public class CardDeck {
     }
   }
 
+  //Check if the deck is empty
   public boolean isEmpty() {
     return deck.isEmpty();
   }
