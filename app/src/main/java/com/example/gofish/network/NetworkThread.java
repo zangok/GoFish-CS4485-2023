@@ -17,8 +17,6 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 public class NetworkThread extends Thread {
     private Handler networkHandler;
-    //private WifiDirect manager;
-    //private MessageListener listener;
     private static final int MSG_TYPE_SEND_DATA = 1;
     private static final int MSG_TYPE_RECEIVE_DATA = 2;
     private Socket socket;
@@ -27,26 +25,19 @@ public class NetworkThread extends Thread {
     private boolean isHost;
     private int serverPort = 8080;
     private BlockingQueue<String> messageQueue = new LinkedBlockingQueue<>();
+    //Creates network thread with device as client
     public NetworkThread(String ipAddress, Handler networkHandler) {
-        //try {
-        //    socket = new Socket("10.0.2.2",8080);
         this.networkHandler  = networkHandler;
         this.ipAddress = ipAddress;
-        //} catch (IOException e) {
-        //    throw new RuntimeException(e);
-        //}
         isHost  = false;
     }
+    //Creates network thread with device as host
     public NetworkThread(Handler networkHandler) {
-        //try {
-        //    serverSocket = new ServerSocket(8080);
         this.networkHandler  = networkHandler;
-        //} catch (IOException e) {
-        //    throw new RuntimeException(e);
-        //}
         isHost  = true;
     }
     //todo:split network class into client and server improve coupling and cohesion
+    //Sets up connection between 2 peers with one being host & other client
     @Override
     public void run() {
         Log.d("network","network thread made");
@@ -59,20 +50,40 @@ public class NetworkThread extends Thread {
                 Log.d("network", "server listening");
                 socket = serverSocket.accept();
                 Log.d("network", "server connected");
+                sendMessage("hello client, this is server");
                 handleMessage(socket.getOutputStream(), socket.getInputStream());
             } else {
                 Log.d("network", "client connecting");
                 socket = new Socket(ipAddress,8080);
                 Log.d("network", "client connected");
+                sendMessage("hello network, this is client");
                 handleMessage(socket.getOutputStream(), socket.getInputStream());
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
+        } finally {
+            //Close the socket in the finally block to ensure it's closed even if an exception occurs
+            if (socket != null && !socket.isClosed()) {
+                try {
+                    socket.close();
+                    Log.d("network", "Socket closed");
+                } catch (IOException e) {
+                    Log.e("network", "Error closing socket", e);
+                }
+            }
+            if (serverSocket != null && !serverSocket.isClosed()) {
+                try {
+                    serverSocket.close();
+                    Log.d("network", "Server Socket closed");
+                } catch (IOException e) {
+                    Log.e("network", "Error closing server socket", e);
+                }
+            }
         }
     }
 
 
-    //network operations
+    //network operations, sends message
     //todo: change to use handler instead
     public void sendMessage(String message) {
         messageQueue.add(message);
@@ -80,6 +91,7 @@ public class NetworkThread extends Thread {
     }
     //todo:not use busy wait, create thread to read and a thread to write + blocking read / write
     //should work however, so low priority
+    //Takes input & output stream from sockets to send messages to other devices
     private void handleMessage(OutputStream outputStream, InputStream inputStream) {
         Log.d("network", "connected");
         while (true) {
@@ -88,7 +100,7 @@ public class NetworkThread extends Thread {
                 try {
                     outputStream.write(message.getBytes());
                     outputStream.flush();
-                    Log.d("network","Message Sent to Peer");
+                    Log.d("network","Message Sent to Peer:" + message);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -102,9 +114,10 @@ public class NetworkThread extends Thread {
                         Message message = Message.obtain();
                         message.what = MSG_TYPE_RECEIVE_DATA;
                         Bundle bundle = new Bundle();
-                        bundle.putString("key", receivedMessage);
+                        bundle.putString("received", receivedMessage);
                         message.setData(bundle);
                         networkHandler.sendMessage(message);
+                        Log.d("network","received Message:" + receivedMessage);
                     }
                 }
             } catch (IOException e) {
