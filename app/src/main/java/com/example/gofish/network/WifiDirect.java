@@ -45,7 +45,13 @@ public class WifiDirect  {
             if (!refreshedPeers.equals(peers)) {
                 peers.clear();
                 peers.addAll(refreshedPeers);
-                connect();
+                for(WifiP2pDevice device : peers) {
+                    if(device.deviceName.equals("goldfisha") )
+                        connect(device);
+                    else if (device.deviceName == "goldfishb" )
+                        connect(device);
+                }
+                //connect();
                 Log.d("network","new peers added");
             }
             for (WifiP2pDevice device : peers) {
@@ -100,7 +106,10 @@ public class WifiDirect  {
     //wifi direct handles messages for now, might want to split for better coupling later...
     public void sendMessage(String message) {
         networkThread.sendMessage(message);
+
     }
+
+
     private void handleReceivedMessage(String message) {
     }
 
@@ -137,6 +146,7 @@ public class WifiDirect  {
     }
     //connects to device given
     public void connect(WifiP2pDevice device) {
+        Log.d("network ","connecting to :" + device.deviceName);
         WifiP2pConfig config = new WifiP2pConfig();
         config.deviceAddress = device.deviceAddress;
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(context, Manifest.permission.NEARBY_WIFI_DEVICES) != PackageManager.PERMISSION_GRANTED) {
@@ -147,7 +157,8 @@ public class WifiDirect  {
             //                                          int[] grantResults)
             // to handle the case where the user grants the permission. See the documentation
             // for ActivityCompat#requestPermissions for more details.
-            return;
+            Log.d("network", "connect: lacking perms");
+            //return;
         }
         manager.connect(channel, config, new WifiP2pManager.ActionListener() {
             @Override
