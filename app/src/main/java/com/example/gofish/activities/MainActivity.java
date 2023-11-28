@@ -11,6 +11,8 @@ import android.os.Handler;
 
 import com.example.gofish.network.WifiDirect;
 import android.content.Intent;
+import android.os.Looper;
+import android.os.Message;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -24,17 +26,31 @@ import com.example.myapplication.R;
 public class MainActivity extends ComponentActivity {
 
     private static final int PERMISSION_REQUEST_CODE = 0;
+    private final int MSG_TYPE_RECEIVED = 1;
+    private Handler networkHandler = new Handler(Looper.getMainLooper()) {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case MSG_TYPE_RECEIVED:
+                    String receivedMessage = msg.getData().getString("received");
+                    handleReceivedMessage(receivedMessage);
+                    break;
+            }
+        }
+    };
+    public void handleReceivedMessage(String receivedMessage) {
 
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        WifiDirect a = new WifiDirect(this,new Handler());
         String[] permissionsToRequest = {
                 Manifest.permission.ACCESS_FINE_LOCATION,
                 Manifest.permission.NEARBY_WIFI_DEVICES,
         };
+        WifiDirect wifi = new WifiDirect(this,networkHandler);
 
         ActivityCompat.requestPermissions(this, permissionsToRequest, 1);
 
@@ -89,6 +105,7 @@ public class MainActivity extends ComponentActivity {
             }
         }
     }
+
 
 }
 
