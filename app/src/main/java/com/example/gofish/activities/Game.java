@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.example.gofish.activities;
 
 import java.util.ArrayList;
 import java.util.Arrays;

@@ -71,7 +71,13 @@ public class MainActivity extends ComponentActivity {
         animationView.setScaleY(4.0f); // Adjust the scale as needed
 
         Button startGameButton = findViewById(R.id.startGameButton);
-        
+        startGameButton.setOnClickListener(v -> {
+            // Create an Intent to start the RulesActivity
+            Intent intent = new Intent(MainActivity.this, GameActivity.class);
+
+            // Start the new activity
+            startActivity(intent);
+        });
 
         // Get the TextView by its ID
         TextView titleTextView = findViewById(R.id.titleTextView);

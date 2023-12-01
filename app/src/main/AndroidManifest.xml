@@ -45,7 +45,12 @@
         <activity android:name="com.example.gofish.activities.RulesActivity">
             <!-- Intent filters and other activity configuration if needed -->
         </activity>
-
+        <activity android:name="com.example.gofish.activities.GameActivity">
+            <!-- Intent filters and other activity configuration if needed -->
+        </activity>
+        <activity android:name="com.example.gofish.activities.SettingsActivity">
+            <!-- Intent filters and other activity configuration if needed -->
+        </activity>
 
     </application>
 
