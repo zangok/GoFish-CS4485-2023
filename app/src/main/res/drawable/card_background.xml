@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Background color of the card -->
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="#FFFFFF" /> <!-- Set the background color of the card -->
+            <corners android:radius="8dp" /> <!-- Set the corner radius for a rounded card -->
+            <stroke
+                android:width="2dp"
+                android:color="#000000" /> <!-- Set the border color and width for the card -->
+        </shape>
+    </item>
+
+    <!-- Card design (adjust the dimensions as needed) -->
+    <item android:left="10dp" android:right="10dp">
+        <shape android:shape="rectangle">
+            <solid android:color="#FFFFFF" /> <!-- Set the color of the main card body -->
+            <corners android:radius="8dp" /> <!-- Set the corner radius for a rounded card body -->
+        </shape>
+    </item>
+    <item android:top="20dp" android:bottom="20dp">
+        <shape android:shape="rectangle">
+            <solid android:color="#FF0000" /> <!-- Set the color of the top border (suit area) -->
+            <corners android:radius="8dp" /> <!-- Set the corner radius for a rounded top border -->
+        </shape>
+    </item>
+
+    <!-- Suit icons -->
+    <!-- Heart -->
+    <item android:top="30dp" android:bottom="80dp" android:left="40dp" android:right="40dp">
+        <vector
+            android:width="20dp"
+            android:height="20dp"
+            android:viewportWidth="24.0"
+            android:viewportHeight="24.0">
+            <path
+                android:fillColor="#FF0000"
+                android:pathData="M12,2A10,10,0,0,1,22,12A10,10,0,0,1,12,22A10,10,0,0,1,2,12A10,10,0,0,1,12,2Z
+"/>
+        </vector>
+    </item>
+
+    <!-- Diamond -->
+    <item android:top="30dp" android:bottom="80dp" android:left="40dp" android:right="40dp">
+        <vector
+            android:width="20dp"
+            android:height="20dp"
+            android:viewportWidth="24.0"
+            android:viewportHeight="24.0">
+            <!-- Replace the pathData for the diamond suit -->
+            <path
+                android:fillColor="#FF0000"
+                android:pathData="M12,2L22,12L12,22L2,12L12,2Z"/>
+        </vector>
+    </item>
+
+    <!-- Club -->
+    <item android:top="30dp" android:bottom="80dp" android:left="40dp" android:right="40dp">
+        <vector
+            android:width="20dp"
+            android:height="20dp"
+            android:viewportWidth="24.0"
+            android:viewportHeight="24.0">
+            <!-- Replace the pathData for the club suit -->
+            <path
+                android:fillColor="#FF0000"
+                android:pathData="M12,4A8,8,0,0,1,20,12A8,8,0,0,1,12,20A8,8,0,0,1,4,12A8,8,0,0,1,12,4ZM12,14A2,2,0,1,0,12,18A2,2,0,0,0,12,14ZM12,10A2,2,0,1,0,12,14A2,2,0,0,0,12,10Z
+"/>
+        </vector>
+    </item>
+
+    <!-- Spade -->
+    <item android:top="30dp" android:bottom="80dp" android:left="40dp" android:right="40dp">
+        <vector
+            android:width="20dp"
+            android:height="20dp"
+            android:viewportWidth="24.0"
+            android:viewportHeight="24.0">
+            <!-- Replace the pathData for the spade suit -->
+            <path
+                android:fillColor="#FF0000"
+                android:pathData="M12,2C6.48,2,2,6.48,2,12s4.48,10,10,10s10-4.48,10-10S17.52,2,12,2z M12,18c-1.11,0-2-0.89-2-2h4c0,1.11-0.89,2-2,2z M12,15c1.37,0,2.47-1.11,2.47-2.47S13.37,10.06,12,10.06s-2.47,1.11-2.47,2.47S10.63,15,12,15z
+"/>
+        </vector>
+    </item>
+</layer-list>
