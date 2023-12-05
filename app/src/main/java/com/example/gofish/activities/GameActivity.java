@@ -3,11 +3,15 @@ package com.example.gofish.activities;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.content.Intent;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.view.View;
 import android.widget.Button;
 import androidx.appcompat.app.AppCompatActivity;
 import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieDrawable;
+import com.example.gofish.network.WifiDirect;
 import com.example.myapplication.R;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -29,19 +33,34 @@ import java.util.List;
 
 public class GameActivity extends AppCompatActivity {
     private Game goFishGame;
+    private WifiDirect wifi;
     private Player currentPlayer;
     private Player opponentPlayer;
     private MediaPlayer clickSound;
     private RecyclerView currentPlayerRecyclerView, opponentPlayerRecyclerView;
     private CardAdapter currentPlayerAdapter, opponentPlayerAdapter;
     private TextView currentPlayerScoreTextView, opponentPlayerScoreTextView;
+    private final int MSG_TYPE_RECEIVED = 1;
 
-
+    private Handler networkHandler = new Handler(Looper.getMainLooper()) {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case MSG_TYPE_RECEIVED:
+                    String receivedMessage = msg.getData().getString("received");
+                    handleReceivedMessage(receivedMessage,goFishGame);
+                    break;
+            }
+        }
+    };
+    public void handleReceivedMessage(String receivedMessage,Game goFishGame ) {
+        goFishGame.playTurn(opponentPlayer,receivedMessage);
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
-
+        wifi = new WifiDirect(this,networkHandler);
         // Find the LottieAnimationView
         LottieAnimationView animationView = findViewById(R.id.animationView);
 
@@ -97,6 +116,7 @@ public class GameActivity extends AppCompatActivity {
                 finish();
             }
         });
+
     }
 
 
@@ -132,6 +152,7 @@ public class GameActivity extends AppCompatActivity {
         // For simplicity, let's assume the user always asks for the first rank in their hand
         String rankToAsk = currentPlayer.getHand().get(0).getRank();
         boolean successfulTurn = goFishGame.playTurn(opponentPlayer, rankToAsk);
+        wifi.sendMessage(rankToAsk);
 
         if (successfulTurn) {
             updateScores();

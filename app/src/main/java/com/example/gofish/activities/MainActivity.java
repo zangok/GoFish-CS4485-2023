@@ -50,7 +50,6 @@ public class MainActivity extends ComponentActivity {
                 Manifest.permission.ACCESS_FINE_LOCATION,
                 Manifest.permission.NEARBY_WIFI_DEVICES,
         };
-        WifiDirect wifi = new WifiDirect(this,networkHandler);
 
         ActivityCompat.requestPermissions(this, permissionsToRequest, 1);
 

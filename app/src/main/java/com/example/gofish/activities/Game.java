@@ -1,5 +1,7 @@
 package com.example.gofish.activities;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -57,6 +59,7 @@ public class Game {
             if (drawnCard.getRank().equals(rankToAsk)) {
                 return true; // Player drew a matching card and gets another turn.
             } else {
+                Log.d("Game","turn switch");
                 switchToNextPlayer();
                 return false; // Player drew a different card, and it's the next player's turn.
             }
