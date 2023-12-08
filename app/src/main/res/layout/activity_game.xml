@@ -35,7 +35,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="36dp"
         android:layout_marginStart="180dp"
         android:layout_marginEnd="32dp"/>
 
@@ -81,5 +81,15 @@
             android:layout_marginStart="16dp"
             android:text="Play Turn" />
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/gameMessageTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="180dp"
+        android:layout_marginEnd="32dp"
+        android:textColor="#FFFF00"
+        android:textStyle="bold"
+        android:textSize="18sp"/>
 
 </RelativeLayout>
