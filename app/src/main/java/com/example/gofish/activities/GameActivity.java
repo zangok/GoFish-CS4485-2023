@@ -3,15 +3,12 @@ package com.example.gofish.activities;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.content.Intent;
-import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
 import android.view.View;
 import android.widget.Button;
 import androidx.appcompat.app.AppCompatActivity;
 import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieDrawable;
-import com.example.gofish.network.WifiDirect;
+import com.example.myapplication.MainActivity;
 import com.example.myapplication.R;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -33,34 +30,23 @@ import java.util.List;
 
 public class GameActivity extends AppCompatActivity {
     private Game goFishGame;
-    private WifiDirect wifi;
     private Player currentPlayer;
     private Player opponentPlayer;
     private MediaPlayer clickSound;
     private RecyclerView currentPlayerRecyclerView, opponentPlayerRecyclerView;
     private CardAdapter currentPlayerAdapter, opponentPlayerAdapter;
     private TextView currentPlayerScoreTextView, opponentPlayerScoreTextView;
-    private final int MSG_TYPE_RECEIVED = 1;
+    private TextView gameMessageTextView;
+    private Player targetPlayer;
+    private String rankToAsk;
 
-    private Handler networkHandler = new Handler(Looper.getMainLooper()) {
-        @Override
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case MSG_TYPE_RECEIVED:
-                    String receivedMessage = msg.getData().getString("received");
-                    handleReceivedMessage(receivedMessage,goFishGame);
-                    break;
-            }
-        }
-    };
-    public void handleReceivedMessage(String receivedMessage,Game goFishGame ) {
-        goFishGame.playTurn(opponentPlayer,receivedMessage);
-    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
-        wifi = new WifiDirect(this,networkHandler);
+
+        gameMessageTextView = findViewById(R.id.gameMessageTextView);
+
         // Find the LottieAnimationView
         LottieAnimationView animationView = findViewById(R.id.animationView);
 
@@ -95,8 +81,11 @@ public class GameActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 playTurn();
+
             }
+
         });
+        updatePlayTurnButtonText();
 
         // Set OnClickListener for the homeButton
         Button homeButton = findViewById(R.id.homeButton);
@@ -116,19 +105,19 @@ public class GameActivity extends AppCompatActivity {
                 finish();
             }
         });
-
     }
 
 
     private void initializeGame() {
         List<String> playerNames = new ArrayList<>();
-        playerNames.add("Player 1");
-        playerNames.add("Player 2");
+        playerNames.add("com.example.myapplication.Player 1");
+        playerNames.add("com.example.myapplication.Player 2");
 
         goFishGame = new Game(playerNames);
 
         currentPlayer = goFishGame.getCurrentPlayer();
         opponentPlayer = getOpponentPlayer(); // Use the helper method to get the opponent player
+        updateGameMessage("Game started. " + currentPlayer.getName() + "'s turn.");
 
         currentPlayerAdapter = new CardAdapter(currentPlayer.getHand());
         opponentPlayerAdapter = new CardAdapter(opponentPlayer.getHand());
@@ -139,7 +128,14 @@ public class GameActivity extends AppCompatActivity {
         updateScores();
         updateUI();
     }
-
+    private void updateGameMessage(final String message) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                gameMessageTextView.setText(message);
+            }
+        });
+    }
     // Add this helper method to get the opponent player
     private Player getOpponentPlayer() {
         int currentPlayerIndex = goFishGame.getPlayers().indexOf(currentPlayer);
@@ -147,18 +143,47 @@ public class GameActivity extends AppCompatActivity {
         return goFishGame.getPlayers().get(opponentPlayerIndex).copy(); // Copy the opponent player instance
     }
 
-    private void playTurn() {
-        // Implement the logic for a turn
-        // For simplicity, let's assume the user always asks for the first rank in their hand
-        String rankToAsk = currentPlayer.getHand().get(0).getRank();
-        boolean successfulTurn = goFishGame.playTurn(opponentPlayer, rankToAsk);
-        wifi.sendMessage(rankToAsk);
+    // Change this line in playTurnButton.setOnClickListener
 
-        if (successfulTurn) {
-            updateScores();
-            updateUI();
+    // Change the playTurn method to match the method signature in Game class
+    private void playTurn() {
+        if (currentPlayer == null || opponentPlayer == null) {
+            System.out.println("Error: currentPlayer or targetPlayer is null.");
+            return;
         }
+
+        System.out.println("Before Turn - Player 1 Hand: " + currentPlayer.getHand());
+        System.out.println("Before Turn - Player 2 Hand: " + opponentPlayer.getHand());
+
+        String message = currentPlayer.getName() + " asks " + opponentPlayer.getName() + " for a " + rankToAsk + ".";
+        updateGameMessage(message);
+
+        if (opponentPlayer.getHand().isEmpty()) {
+            message = opponentPlayer.getName() + "'s hand is empty. Go Fish!";
+            updateGameMessage(message);
+        } else {
+            boolean successfulTurn = goFishGame.playTurn(opponentPlayer);
+
+            if (successfulTurn) {
+                message = currentPlayer.getName() + " received cards from " + opponentPlayer.getName() + ".";
+                updateGameMessage(message);
+                updateScores();
+                updateUI();
+                updatePlayTurnButtonText(); // Update the button text after the turn
+            } else {
+                message = "Invalid target player or empty hand. Go Fish!";
+                updateGameMessage(message);
+            }
+        }
+
+        updateGameMessage(message);
+        System.out.println("After Turn - Player 1 Hand: " + currentPlayer.getHand());
+        System.out.println("After Turn - Player 2 Hand: " + opponentPlayer.getHand());
     }
+
+
+
+
 
     private void updateScores() {
         currentPlayerScoreTextView.setText("Score P1: " + currentPlayer.getScore());
@@ -175,7 +200,16 @@ public class GameActivity extends AppCompatActivity {
             switchPlayers();
         }
     }
+    private void updatePlayTurnButtonText() {
+        Button playTurnButton = findViewById(R.id.playTurnButton);
 
+        // Check the current player and set the button text accordingly
+        if (currentPlayer.getName().equals("com.example.myapplication.Player 1")) {
+            playTurnButton.setText("Player 1's Turn");
+        } else if (currentPlayer.getName().equals("com.example.myapplication.Player 2")) {
+            playTurnButton.setText("Player 2's Turn");
+        }
+    }
     private void switchPlayers() {
         currentPlayer = getOpponentPlayer();
     }
@@ -183,7 +217,7 @@ public class GameActivity extends AppCompatActivity {
     private void showGameOverDialog() {
         // Implement logic to show a dialog or navigate to the end game screen
         // For now, you can display a simple toast message
-        Toast.makeText(this, "Game Over! Winner: " + goFishGame.getWinner().getName(), Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "com.example.myapplication.Game Over! Winner: " + goFishGame.getWinner().getName(), Toast.LENGTH_SHORT).show();
     }
     // Method to play the button click sound
     private void playButtonClickSound() {
@@ -202,3 +236,7 @@ public class GameActivity extends AppCompatActivity {
         }
     }
 }
+
+
+
+
