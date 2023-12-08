@@ -146,8 +146,8 @@ public class GameActivity extends AppCompatActivity {
             return;
         }
 
-        System.out.println("Before Turn - Player 1 Hand: " + currentPlayer.getHand());
-        System.out.println("Before Turn - Player 2 Hand: " + opponentPlayer.getHand());
+     //   System.out.println("Before Turn - Player 1 Hand: " + currentPlayer.getHand());
+       // System.out.println("Before Turn - Player 2 Hand: " + opponentPlayer.getHand());
 
         String message = currentPlayer.getName() + " asks " + opponentPlayer.getName() + " for a " + rankToAsk + ".";
         updateGameMessage(message);
@@ -175,8 +175,8 @@ public class GameActivity extends AppCompatActivity {
             }
         }
 
-        System.out.println("After Turn - Player 1 Hand: " + currentPlayer.getHand());
-        System.out.println("After Turn - Player 2 Hand: " + opponentPlayer.getHand());
+       // System.out.println("After Turn - Player 1 Hand: " + currentPlayer.getHand());
+        //System.out.println("After Turn - Player 2 Hand: " + opponentPlayer.getHand());
     }
 
     private void updateScores() {
