@@ -1,4 +1,4 @@
-package com.example.gofish.activities;
+package com.example.myapplication;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -25,6 +25,8 @@ public class Player {
     }
 
     public ArrayList<Card> getHand() {
+
+
         return hand;
     }
 
@@ -42,6 +44,8 @@ public class Player {
 
     public void addToHand(Card card) {
         hand.add(card);
+        System.out.println("Added cards to hand: " + card);
+        System.out.println("Updated hand: " + hand);
     }
 
     public void removeFromHand(Card card) {
@@ -65,20 +69,30 @@ public class Player {
     public List<Card> transferCards(String rank) {
         List<Card> cardsToTransfer = new ArrayList<>();
         Iterator<Card> iterator = hand.iterator();
-        while(iterator.hasNext()) {
+
+        while (iterator.hasNext()) {
             Card card = iterator.next();
-            if(card.getRank().equals(rank)) {
+            if (card.getRank().equals(rank)) {
                 cardsToTransfer.add(card);
-                iterator.remove();
+                iterator.remove(); // Remove the card from the hand
             }
         }
+
+        System.out.println("Transferred cards: " + cardsToTransfer);
+        System.out.println("Remaining hand: " + hand);
+
         return cardsToTransfer;
     }
 
+
+
+
+
     public void addToHand(List<Card> cards) {
         hand.addAll(cards);
+        System.out.println("Added cards to hand: " + cards);
+        System.out.println("Updated hand: " + hand);
     }
-
     protected int countRankCards(String rank) {
         int count = 0;
         for (Card card : hand) {
@@ -103,6 +117,7 @@ public class Player {
     public void addToScore(int points) {
         score += points;
     }
+
 
     public Player copy() {
         Player copyPlayer = new Player(this.getName());
